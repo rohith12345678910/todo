@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <style>
+    body {
+                font-family: sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background-color: #f5f5f5;
+              }
+              
+              .todo-list {
+                background-color: #fff;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+                padding: 20px;
+                max-width: 400px; /* Adjust as needed */
+                margin: 0 auto; /* Center horizontally */
+              }
+              
+              h1 {
+                font-size: 24px;
+                text-align: center;
+                margin-bottom: 15px;
+              }
+              
+              .input-container {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+              }
+              
+              input[type="text"] {
+                padding: 8px 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                flex: 1;
+                font-size: 16px;
+              }
+              
+              .addBtn {
+                background-color: #28a745; /* Green */
+                color: #fff;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+              }
+              
+              ol {
+                padding: 0;
+                list-style: none;
+              }
+              
+              li {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+                margin-bottom: 5px;
+              }
+              
+              .text {
+                font-size: 16px;
+              }
+              
+              .Remove,
+              .move-up,
+              .move-dowm {
+                background-color: transparent;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                margin-left: 10px;
+              }
+              
+              .Remove:hover,
+              .move-up:hover,
+              .move-dowm:hover {
+                color: #f00; /* Red on hover */
+              }
+              .box{
+                border: 3px solid;
+                padding: 25px;
+              }
+              
+              /* Media queries for responsiveness */
+              @media (max-width: 768px) {
+                .todo-list {
+                  max-width: 300px;
+                }
+                .input-container {
+                  flex-direction: column;
+                }
+                input[type="text"] {
+                  margin-bottom: 5px;
+                }
+              }
+
+
+  </style>
+</head>
+<body>
+  <div class="todo-list">
+    <h1>Todo-List</h1>
+    <div>
+      <input id="taskInput" type="text" placeholder="Enter Task here..">
+      <button class="addBtn" onclick="handleAdd()">Add</button>
+      
+      <input style="margin-top: 10px;" id="searchInput" type="text" placeholder="Search..." onkeyup="filterTasks()">
+    </div>
+    <ol id="taskList"></ol>
+  </div>
+  <script>
+    let tasks = [];
+
+function handleInput() {
+  return document.getElementById('taskInput').value;
+}
+
+function handleAdd() {
+  const newTask = handleInput();
+  if (newTask.trim() !== "") {
+    tasks.push(newTask);
+    document.getElementById('taskInput').value = "";
+    displayTasks();
+  }
+}
+
+function handleRemove(index) {
+  tasks.splice(index, 1);
+  displayTasks();
+}
+
+function taskUp(index) {
+  if (index > 0) {
+    [tasks[index], tasks[index - 1]] = [tasks[index - 1], tasks[index]];
+    displayTasks();
+  }
+}
+
+function taskDown(index) {
+  if (index < tasks.length - 1) {
+    [tasks[index], tasks[index + 1]] = [tasks[index + 1], tasks[index]];
+    displayTasks();
+  }
+}
+
+function displayTasks() {
+  const taskList = document.getElementById('taskList');
+  taskList.innerHTML = "";
+  tasks.forEach((task, index) => {
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    span.className = 'text';
+    span.textContent = task;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'Remove';
+    removeBtn.textContent = 'Delete';
+    removeBtn.onclick = () => handleRemove(index);
+
+    const upBtn = document.createElement('button');
+    upBtn.className = 'move-up';
+    upBtn.textContent = '👆';
+    upBtn.onclick = () => taskUp(index);
+
+    const downBtn = document.createElement('button');
+    downBtn.className = 'move-down';
+    downBtn.textContent = '👇';
+    downBtn.onclick = () => taskDown(index);
+
+    li.appendChild(span);
+    li.appendChild(removeBtn);
+    li.appendChild(upBtn);
+    li.appendChild(downBtn);
+    taskList.appendChild(li);
+  });
+}
+
+function filterTasks() {
+  const searchValue = document.getElementById('searchInput').value.toLowerCase();
+  const filteredTasks = tasks.filter(task =>
+    task.toLowerCase().includes(searchValue)
+  );
+  displayFilteredTasks(filteredTasks);
+}
+
+function displayFilteredTasks(filteredTasks) {
+  const taskList = document.getElementById('taskList');
+  taskList.innerHTML = "";
+  filteredTasks.forEach((task, index) => {
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    span.className = 'text';
+    span.textContent = task;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'Remove';
+    removeBtn.textContent = 'Delete';
+    removeBtn.onclick = () => handleRemove(index);
+
+    const upBtn = document.createElement('button');
+    upBtn.className = 'move-up';
+    upBtn.textContent = '👆';
+    upBtn.onclick = () => taskUp(index);
+
+    const downBtn = document.createElement('button');
+    downBtn.className = 'move-down';
+    downBtn.textContent = '👇';
+    downBtn.onclick = () => taskDown(index);
+
+    li.appendChild(span);
+    li.appendChild(removeBtn);
+    li.appendChild(upBtn);
+    li.appendChild(downBtn);
+    taskList.appendChild(li);
+  });
+}
+
+displayTasks();
+
+  </script>
+</body>
+</html>
